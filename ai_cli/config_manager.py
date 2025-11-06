@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Optional
 from pathlib import Path
 import json, importlib.resources as resources
-
+from collections.abc import Mapping
 
 
 class ConfigManager:
@@ -20,7 +20,7 @@ class ConfigManager:
         if user_config.exists():
             with open(user_config) as f:
                 user_overrides = json.load(f)
-                config.update(user_overrides)
+                deep_update(config, user_overrides)
 
         # Validate config structure
         if "prompts" not in config:
@@ -50,3 +50,15 @@ class ConfigManager:
     
     def get_history_file(self) -> Path:
         return self.history_file
+
+def deep_update(original, updates):
+    """
+    Recursively update a dictionary with another dictionary.
+    Merges nested dicts instead of overwriting them.
+    """
+    for key, value in updates.items():
+        if isinstance(value, Mapping) and isinstance(original.get(key), Mapping):
+            deep_update(original[key], value)
+        else:
+            original[key] = value
+    return
