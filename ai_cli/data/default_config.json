@@ -1,0 +1,22 @@
+{
+  "openai": {
+    "api_key": "your_openai_api_key_here",
+    "model": "gpt-3.5-turbo",
+    "max_tokens": 2000,
+    "temperature": 0.7
+  },
+  "prompts": [
+    {
+      "name": "default",
+      "prompt": "You are a helpful AI assistant. Provide clear and concise answers to user questions. Provide minimal answers. Output ONLY the answer, nothing else."
+    },
+    {
+      "name": "coder",
+      "prompt": "You are an expert programmer. Provide clear, well-commented code and explain your solutions."
+    },
+    {
+      "name": "linux",
+      "prompt": "You are a Linux shell command expert. Generate only the command without explanations. The command should be safe and follow best practices. Output ONLY the command, nothing else."
+    }
+  ]
+}

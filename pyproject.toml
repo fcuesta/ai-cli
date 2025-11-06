@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ai-cli"
+version = "0.1.0"
+description = "AI CLI tool"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "openai",
+    "prompt_toolkit"
+]
+
+[tool.setuptools.package-data]
+"ai_cli" = ["data/*.json"]
+
+[project.scripts]
+ai-cli = "ai_cli.chat_app:main"
