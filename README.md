@@ -1,5 +1,7 @@
 # TODO
 
+python -m ai_cli.chat_app -sp ib
+
 pip install git+https://github.com/fcuesta/ai-cli.git 
 pip install git+https://github.com/fcuesta/ai-cli.git --force-reinstall -vvv
 

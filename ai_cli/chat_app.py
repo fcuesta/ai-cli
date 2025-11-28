@@ -11,9 +11,9 @@ from typing import Optional
 from prompt_toolkit import PromptSession
 from prompt_toolkit.history import FileHistory
 
-from config_manager import ConfigManager
-from llm_client import LLMClient
-from prompt_processor import PromptProcessor
+from .config_manager import ConfigManager
+from .llm_client import LLMClient
+from .prompt_processor import PromptProcessor
 
 
 class ChatApp:
