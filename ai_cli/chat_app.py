@@ -49,7 +49,7 @@ class ChatApp:
                     with open(expanded_path, 'r', encoding='utf-8') as f:
                         file_contents.append(f"\n--- Content from {expanded_path} ---\n{f.read()}")
                 except Exception as e:
-                    print(f"Warning: Could not read file1 {expanded_path}: {e}", file=sys.stderr)
+                    print(f"Warning: Could not read file in {expanded_path}: {e}", file=sys.stderr)
             
             if file_contents:
                 prompt_text = prompt_text + ''.join(file_contents)
