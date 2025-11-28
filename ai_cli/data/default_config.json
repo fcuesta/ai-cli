@@ -5,18 +5,16 @@
     "max_tokens": 2000,
     "temperature": 0.7
   },
-  "prompts": [
-    {
-      "name": "default",
-      "prompt": "You are a helpful AI assistant. Provide clear and concise answers to user questions. Provide minimal answers. Output ONLY the answer, nothing else."
+  "prompts": {
+    "default": {
+      "prompt": "Provide clear concise minimal answers. Output ONLY the answer, nothing else. If code or structured data is requested, provide only the code or data without any explanations."
     },
-    {
-      "name": "coder",
-      "prompt": "You are an expert programmer. Provide clear, well-commented code and explain your solutions."
-    },
-    {
-      "name": "linux",
+    "linux": {
       "prompt": "You are a Linux shell command expert. Generate only the command without explanations. The command should be safe and follow best practices. Output ONLY the command, nothing else."
+    },
+    "ib": {
+      "prompt": "You are a helpful assistant that provides accurate and concise",
+      "files": ["~/.ai_cli/prompts/ib_files.txt"]
     }
-  ]
+  }
 }

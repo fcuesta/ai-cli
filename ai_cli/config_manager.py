@@ -26,19 +26,16 @@ class ConfigManager:
         if "prompts" not in config:
             raise ValueError("Missing 'prompts' key in config")
         
-        if not isinstance(config["prompts"], list):
-            raise ValueError("'prompts' must be a list")
+        if not isinstance(config["prompts"], dict):
+            raise ValueError("'prompts' must be a dictionary")
         
         # Ensure at least default prompt exists
-        if not any(p.get("name") == "default" for p in config["prompts"]):
-            config["prompts"].insert(0, {"name": "default", "prompt": ""})
+        if "default" not in config["prompts"]:
+            config["prompts"]["default"] = {"prompt": "You are a helpful AI assistant."}
         return config
 
-    def get_prompt_by_name(self, name: str) -> Optional[str]:
-        for prompt_item in self.config["prompts"]:
-            if prompt_item.get("name") == name:
-                return prompt_item.get("prompt", "")
-        return None
+    def get_prompt_by_name(self, name: str) -> Optional[dict]:
+        return self.config["prompts"].get(name)
 
     def get_openai_config(self) -> str:
         config = self.config.get("openai")

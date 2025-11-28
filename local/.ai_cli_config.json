@@ -1,0 +1,14 @@
+{
+  "openai": {
+    "api_key": "redacted_for_security",
+    "model": "gpt-3.5-turbo",
+    "max_tokens": 2000,
+    "temperature": 0.7
+  },
+  "prompts": {
+    "ib": {
+      "prompt": "Given the file provied about servers names, log locations and urls, provide accurate and concise answers",
+      "files": ["~/bin/ib.md"]
+    }
+  }
+}

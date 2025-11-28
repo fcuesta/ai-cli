@@ -1,3 +1,9 @@
+# TODO
+
+pip install git+https://github.com/fcuesta/ai-cli.git 
+pip install git+https://github.com/fcuesta/ai-cli.git --force-reinstall -vvv
+
+
 # AI Chat Client
 
 A modular Python command line application that behaves as a ChatGPT client with interactive and non-interactive modes.
@@ -62,16 +68,14 @@ The application uses `.ai_config.json` for configuration:
 
 ```json
 {
-  "prompts": [
-    {
-      "name": "default",
-      "prompt": ""
+  "prompts": {
+    "default": {
+      "prompt": "Provide clear concise minimal a..."
     },
-    {
-      "name": "coder", 
-      "prompt": "You are an expert programmer. Provide clear, well-commented code."
-    }
-  ]
+    "linux": {
+      "prompt": "Provide clear concise minimal a..."
+    },
+  }
 }
 ```
 
@@ -91,7 +95,7 @@ python chat_app.py
 python chat_app.py -ni "Make a summary of #test.txt"
 
 # Use custom prompt configuration  
-python chat_app.py -p writer -ni "Improve this text: ##"
+python chat_app.py -sp writer -ni "Improve this text: ##"
 
 # Multiple files with globbing
 python chat_app.py -ni "Analyze #src/*.py and #tests/*.py"
@@ -110,6 +114,7 @@ python chat_app.py -ni "Analyze #src/*.py and #tests/*.py"
 - Type `reset` to clear conversation history
 - Type `exit` or `quit` to end the session
 
+### OUTDATED DOC
 ### Shell Mode
 ```bash
 ./chat_app.py -s

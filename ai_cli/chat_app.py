@@ -32,7 +32,26 @@ class ChatApp:
             sys.exit(1)
 
     def get_system_prompt(self, prompt_name: str) -> str:
-        prompt_text = self.config_manager.get_prompt_by_name(prompt_name)
+        prompt_config = self.config_manager.get_prompt_by_name(prompt_name)
+        if not prompt_config:
+            return ""
+        
+        prompt_text = prompt_config.get("prompt", "")
+        
+        # Handle files element if present
+        files = prompt_config.get("files", [])
+        if files:
+            file_contents = []
+            for file_path in files:
+                try:
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        file_contents.append(f"\n--- Content from {file_path} ---\n{f.read()}")
+                except Exception as e:
+                    print(f"Warning: Could not read file {file_path}: {e}", file=sys.stderr)
+            
+            if file_contents:
+                prompt_text = prompt_text + ''.join(file_contents)
+        
         return prompt_text or ""
 
     def run(self, interactive: bool, system_prompt_name: str, user_prompt: str) -> None:
@@ -92,7 +111,7 @@ def main():
         epilog="""
 Examples:
   %(prog)s -i                       # Interactive mode
-  %(prog)s -s system_prompt         # Use system prompt configuration
+  %(prog)s -sp system_prompt        # Use system prompt configuration
   %(prog)s "Summarize @readme.txt"  # Include file content
   %(prog)s "Explain @@"             # Include standard input content
         """,
@@ -104,7 +123,7 @@ Examples:
 
     # Prompt configuration
     parser.add_argument(
-        "-s",
+        "-sp",
         "--system-prompt",
         default="default",
         help="Named system prompt from .ai_config.json (default: default)",
