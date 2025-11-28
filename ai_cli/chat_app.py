@@ -4,15 +4,16 @@ AI Chat Application - Command line ChatGPT client with interactive and non-inter
 """
 
 import argparse
+import os
 import sys
 from typing import Optional
 
 from prompt_toolkit import PromptSession
 from prompt_toolkit.history import FileHistory
 
-from ai_cli.config_manager import ConfigManager
-from ai_cli.llm_client import LLMClient
-from ai_cli.prompt_processor import PromptProcessor
+from config_manager import ConfigManager
+from llm_client import LLMClient
+from prompt_processor import PromptProcessor
 
 
 class ChatApp:
@@ -44,10 +45,11 @@ class ChatApp:
             file_contents = []
             for file_path in files:
                 try:
-                    with open(file_path, 'r', encoding='utf-8') as f:
-                        file_contents.append(f"\n--- Content from {file_path} ---\n{f.read()}")
+                    expanded_path = os.path.expandvars(os.path.expanduser(file_path))
+                    with open(expanded_path, 'r', encoding='utf-8') as f:
+                        file_contents.append(f"\n--- Content from {expanded_path} ---\n{f.read()}")
                 except Exception as e:
-                    print(f"Warning: Could not read file {file_path}: {e}", file=sys.stderr)
+                    print(f"Warning: Could not read file1 {expanded_path}: {e}", file=sys.stderr)
             
             if file_contents:
                 prompt_text = prompt_text + ''.join(file_contents)

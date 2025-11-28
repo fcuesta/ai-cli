@@ -7,8 +7,8 @@
   },
   "prompts": {
     "ib": {
-      "prompt": "Given the file provied about servers names, log locations and urls, provide accurate and concise answers",
-      "files": ["~/bin/ib.md"]
+      "prompt": "Given the file provied about servers names, log locations and urls, provide accurate and concise answers. Output ONLY the answer, nothing else, without any explanations.",
+      "files": ["~/ai_cli/ib.md"]
     }
   }
 }

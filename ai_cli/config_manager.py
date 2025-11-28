@@ -12,7 +12,7 @@ class ConfigManager:
         self.config = self.load_config()
 
     def load_config(self) -> dict:
-        with resources.files("ai_cli.data").joinpath("default_config.json").open("r") as f:
+        with resources.files("data").joinpath("default_config.json").open("r") as f:
             config = json.load(f)
 
         # Check for user overrides
