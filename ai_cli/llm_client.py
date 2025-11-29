@@ -11,7 +11,7 @@ class LLMClient:
         if config:
             self.api_key = config.get("api_key")
             self.model = config.get("model")
-            self.max_tokens = config.get("max_tokens")
+            self.max_completion_tokens = config.get("max_completion_tokens")
             self.temperature = config.get("temperature")
         self.conversation_history: List[Dict[str, str]] = []
         
@@ -41,7 +41,7 @@ class LLMClient:
             response = self.client.chat.completions.create(
                 model=self.model,
                 messages=messages,
-                max_tokens=self.max_tokens,
+                max_completion_tokens=self.max_completion_tokens,
                 temperature=self.temperature
             )
 
