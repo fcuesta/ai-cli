@@ -27,7 +27,11 @@ class ChatApp:
             openai_config = self.config_manager.get_openai_config()
             self.llm_client = LLMClient(openai_config)
             history_file = self.config_manager.get_history_file()
-            self.session = PromptSession(history=FileHistory(str(history_file))) if interactive else None
+            self.session = (
+                PromptSession(history=FileHistory(str(history_file)))
+                if interactive
+                else None
+            )
         except Exception as e:
             print(f"Error during setup: {e}", file=sys.stderr)
             sys.exit(1)
@@ -36,9 +40,9 @@ class ChatApp:
         prompt_config = self.config_manager.get_prompt_by_name(prompt_name)
         if not prompt_config:
             return ""
-        
+
         prompt_text = prompt_config.get("prompt", "")
-        
+
         # Handle files element if present
         files = prompt_config.get("files", [])
         if files:
@@ -46,14 +50,19 @@ class ChatApp:
             for file_path in files:
                 try:
                     expanded_path = os.path.expandvars(os.path.expanduser(file_path))
-                    with open(expanded_path, 'r', encoding='utf-8') as f:
-                        file_contents.append(f"\n--- Content from {expanded_path} ---\n{f.read()}")
+                    with open(expanded_path, "r", encoding="utf-8") as f:
+                        file_contents.append(
+                            f"\n--- Content from {expanded_path} ---\n{f.read()}"
+                        )
                 except Exception as e:
-                    print(f"Warning: Could not read file in {expanded_path}: {e}", file=sys.stderr)
-            
+                    print(
+                        f"Warning: Could not read file in {expanded_path}: {e}",
+                        file=sys.stderr,
+                    )
+
             if file_contents:
-                prompt_text = prompt_text + ''.join(file_contents)
-        
+                prompt_text = prompt_text + "".join(file_contents)
+
         return prompt_text or ""
 
     def run(self, interactive: bool, system_prompt_name: str, user_prompt: str) -> None:
@@ -62,7 +71,7 @@ class ChatApp:
         try:
             while True:
                 try:
-                    user_input = user_prompt 
+                    user_input = user_prompt
                     if not user_prompt:
                         if self.session is None:
                             user_input = input("> ").strip()
@@ -81,12 +90,14 @@ class ChatApp:
                     # Process the prompt (handle files and std input)
                     processed_prompt = PromptProcessor.process_prompt(user_input)
 
-                    # Send to LLM
-                    response = self.llm_client.send_message(
+                    # Send to LLM and stream the response
+                    for chunk in self.llm_client.send_message(
                         processed_prompt,
                         system_prompt=system_prompt if system_prompt else None,
-                    )
-                    print(response)
+                    ):
+                        print(chunk, end="", flush=True)
+
+                    print()  # Add newline after streaming is complete
 
                     if not interactive:
                         break
@@ -137,7 +148,10 @@ Examples:
     app = ChatApp()
     interactive = args.interactive and sys.stdin.isatty()
     app.setup(interactive)
-    app.run(interactive, args.system_prompt, " ".join(args.prompt) if args.prompt else "")
+    app.run(
+        interactive, args.system_prompt, " ".join(args.prompt) if args.prompt else ""
+    )
+
 
 if __name__ == "__main__":
     main()
