@@ -9,10 +9,17 @@ from openai import OpenAI
 
 class LLMClient:
     def __init__(self, config: Optional[dict] = None):
+        self.api_key = None
+        self.model = None
+        self.max_output_tokens = None
+
         if config:
             self.api_key = config.get("api_key")
             self.model = config.get("model")
-            self.max_completion_tokens = config.get("max_completion_tokens")
+            # Keep backward compatibility with existing config key.
+            self.max_output_tokens = config.get(
+                "max_output_tokens", config.get("max_completion_tokens")
+            )
         self.conversation_history: List[Dict[str, str]] = []
 
         # Initialize the OpenAI client
@@ -47,22 +54,18 @@ class LLMClient:
 
         # print("MESSAGES:", messages)
         try:
-            # Use the new streaming API
-            stream = self.client.chat.completions.create(
-                model=self.model,
-                messages=messages,
-                max_completion_tokens=self.max_completion_tokens,
-                stream=True,
-            )
-
             assistant_message = ""
-            
-            # Stream the response
-            for chunk in stream:
-                if chunk.choices[0].delta.content is not None:
-                    content = chunk.choices[0].delta.content
-                    assistant_message += content
-                    yield content
+
+            # Stream the response using the Responses API.
+            with self.client.responses.stream(
+                model=self.model,
+                input=messages,
+                max_output_tokens=self.max_output_tokens,
+            ) as stream:
+                for event in stream:
+                    if event.type == "response.output_text.delta" and event.delta:
+                        assistant_message += event.delta
+                        yield event.delta
 
             # Update conversation history after streaming is complete
             self.conversation_history.append({"role": "user", "content": message})

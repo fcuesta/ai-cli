@@ -116,6 +116,27 @@ class ChatApp:
             print(f"Fatal error: {e}", file=sys.stderr)
             sys.exit(1)
 
+    def show_settings(
+        self, interactive: bool, system_prompt_name: str, user_prompt: str
+    ) -> None:
+        openai_config = self.config_manager.get_openai_config()
+        system_prompt = self.get_system_prompt(system_prompt_name)
+
+        model = openai_config.get("model", "")
+        max_output_tokens = openai_config.get(
+            "max_output_tokens", openai_config.get("max_completion_tokens", "")
+        )
+
+        print("=== Settings ===")
+        print(f"interactive: {interactive}")
+        print(f"system_prompt_name: {system_prompt_name}")
+        print(f"model: {model}")
+        print(f"max_output_tokens: {max_output_tokens}")
+        print(f"prompt: {user_prompt if user_prompt else '[interactive input]'}")
+        print("system_prompt:")
+        print(system_prompt if system_prompt else "[none]")
+        print("=== End Settings ===")
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -142,14 +163,27 @@ Examples:
         help="Named system prompt from .ai_config.json (default: default)",
     )
 
+    parser.add_argument(
+        "--show-settings",
+        action="store_true",
+        help="Display effective runtime settings (including model and system prompt)",
+    )
+
     parser.add_argument("prompt", nargs="*", help="Prompt")
     args = parser.parse_args()
 
     app = ChatApp()
     interactive = args.interactive and sys.stdin.isatty()
     app.setup(interactive)
+    user_prompt = " ".join(args.prompt) if args.prompt else ""
+
+    if args.show_settings:
+        app.show_settings(interactive, args.system_prompt, user_prompt)
+
     app.run(
-        interactive, args.system_prompt, " ".join(args.prompt) if args.prompt else ""
+        interactive,
+        args.system_prompt,
+        user_prompt,
     )
 
 
